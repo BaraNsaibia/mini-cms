@@ -25,4 +25,5 @@ Route::prefix('posts')->name('posts.')->group(function () {
     Route::get('/{slug}', [PostController::class, 'show'])
         ->where('slug', '[a-z0-9-]+')
         ->name('show');
+    Route::get('/heure', [PageController::class, 'time'])->name('time');
 });

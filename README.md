@@ -6,24 +6,23 @@ Auteur : Bara Nsaibia, groupe MDW33.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-01b)
+## État actuel (tag lab-02)
 
--   Routes en closures : `/`, `/bonjour`, `/bonjour-court`, `/bienvenue`, `/version`, `/heure` et `/a-propos`.
--   Vues Blade : `bienvenue`, `heure` et `a-propos`.
+-   Routes nommées, toutes servies par des contrôleurs : `PageController` (pages) et `PostController` (articles).
+-   Articles stockés dans un tableau PHP, sans base de données pour l'instant.
+-   Layout Blade `<x-layout>` avec Tailwind chargé par Vite.
 -   Base de données SQLite locale (`database/database.sqlite`, non versionnée).
 
 ## Routes disponibles
 
-| Méthode | URI | Réponse |
-|---|---|---|
-| GET | `/a-propos` | Vue `a-propos` avec le nom de l'auteur et le groupe |
-| GET | `/` | Vue `welcome` (page d'accueil par défaut de Laravel) |
-| GET | `/bonjour` | Texte brut « Bonjour MDW3 ! Voici ma première route Laravel 13. » |
-| GET | `/bonjour-court` | Texte brut renvoyé par une fonction fléchée |
-| GET | `/bienvenue` | Vue `bienvenue` avec les données de l'étudiant, groupe et cours |
-| GET | `/version` | Version de Laravel en texte brut |
-| GET | `/heure` | Vue `heure` affichant la date et l'heure courantes |
-
+| Méthode | URI                     | Nom             | Action                   |
+| ------- | ----------------------- | --------------- | ------------------------ |
+| GET     | `/`                     | `home`          | `PageController@home`    |
+| GET     | `/a-propos`             | `about`         | `PageController@about`   |
+| GET     | `/heure`                | `time`          | `PageController@time`    |
+| GET     | `/posts`                | `posts.index`   | `PostController@index`   |
+| GET     | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
+| GET     | `/posts/{slug}`         | `posts.show`    | `PostController@show`    |
 
 ## Prérequis
 
@@ -65,18 +64,14 @@ Ouvrir ensuite http://localhost:8000 (adresse de l'application, différente de l
 
 ## Captures d'écran
 
-### Page d'accueil
+### Accueil avec le layout
 
-![Page d'accueil de Mini-CMS](screenshots/s01-accueil.png)
+![Page d'accueil avec le layout](screenshots/s03_accueil.png)
 
-### Page Bienvenue
+### Liste des articles
 
-![Page Bienvenue](screenshots/s01-bienvenue.png)
+![Liste des articles](screenshots/s03-articles.png)
 
-### Liste des routes
+### Détail d'un article
 
-![Sortie de php artisan route:list](screenshots/s01-route-list.png)
-
-### Page À propos
-
-![Page A propos](screenshots/s02-a-propos.png)
+![Détail d'un article](screenshots/s03-article.png)
