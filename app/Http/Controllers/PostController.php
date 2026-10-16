@@ -20,7 +20,7 @@ class PostController extends Controller
     public function archive(string $year): View
     {
         return view('posts.index', [
-            'heading' => 'Articles de ' . $year,
+            'heading' => 'Articles de '.$year,
             'posts' => Post::whereYear('published_at', $year)->latest('id')->paginate(4),
         ]);
     }
@@ -35,6 +35,7 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/', 'unique:posts,slug'],
+            'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
             'is_published' => ['nullable', 'boolean'],
         ]);
