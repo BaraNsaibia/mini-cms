@@ -19,3 +19,19 @@ Route::get('/bienvenue', function () {
         'cours' => 'Atelier Framework Côté Serveur',
     ]);
 });
+
+Route::get('/version', fn() => 'Laravel ' . app()->version());
+
+Route::get('/heure', function () {
+    return view('heure', [
+        'date' => date('d/m/Y'),
+        'heure' => date('H:i:s'),
+    ]);
+});
+
+Route::get('/a-propos', function () {
+    return view('a-propos', [
+        'auteur' => 'Bara Nsaibia',
+        'groupe' => 'MDW33',
+    ]);
+});
