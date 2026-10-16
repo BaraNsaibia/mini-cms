@@ -12,6 +12,19 @@ Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication 
 -   Vues Blade : `bienvenue`, `heure` et `a-propos`.
 -   Base de données SQLite locale (`database/database.sqlite`, non versionnée).
 
+## Routes disponibles
+
+| Méthode | URI | Réponse |
+|---|---|---|
+| GET | `/a-propos` | Vue `a-propos` avec le nom de l'auteur et le groupe |
+| GET | `/` | Vue `welcome` (page d'accueil par défaut de Laravel) |
+| GET | `/bonjour` | Texte brut « Bonjour MDW3 ! Voici ma première route Laravel 13. » |
+| GET | `/bonjour-court` | Texte brut renvoyé par une fonction fléchée |
+| GET | `/bienvenue` | Vue `bienvenue` avec les données de l'étudiant, groupe et cours |
+| GET | `/version` | Version de Laravel en texte brut |
+| GET | `/heure` | Vue `heure` affichant la date et l'heure courantes |
+
+
 ## Prérequis
 
 -   PHP et Composer (PHP 8.3 ou plus depuis https://www.php.net/downloads, avec les extensions curl, fileinfo, mbstring, openssl, pdo_sqlite, sqlite3 et zip activées dans php.ini, et Composer depuis https://getcomposer.org).
