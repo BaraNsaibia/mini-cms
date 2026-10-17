@@ -74,7 +74,7 @@ Ouvrir ensuite [http://localhost:8000](http://localhost:8000). L'application uti
 
 ### Accueil avec le layout
 
-![Page d'accueil avec le layout](screenshots/s03_accueil.png)
+![Page d'accueil avec le layout](screenshots/<img width="1529" height="694" alt="s03_acceuil" src="https://github.com/user-attachments/assets/65d49684-3de1-4314-87ad-707afef05b6a" />)
 
 ### Liste des articles — Session 03
 
