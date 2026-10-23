@@ -21,7 +21,7 @@ class PostController extends Controller
     public function archive(string $year): View
     {
         return view('posts.index', [
-            'heading' => 'Articles de ' . $year,
+            'heading' => 'Articles de '.$year,
             'posts' => Post::published()->with('user', 'category', 'tags')->whereYear('published_at', $year)->latest('id')->paginate(4),
         ]);
     }
@@ -53,7 +53,16 @@ class PostController extends Controller
     {
         $post->load('user', 'category', 'tags');
 
-        return view('posts.show', compact('post'));
+        $relatedPosts = $post->category
+            ? $post->category->posts()
+                ->published()
+                ->where('id', '!=', $post->id)
+                ->with('user', 'category', 'tags')
+                ->latest('id')
+                ->get()
+            : collect();
+
+        return view('posts.show', compact('post', 'relatedPosts'));
     }
 
     public function edit(Post $post): View
@@ -88,7 +97,7 @@ class PostController extends Controller
 
     public function togglePublication(Post $post): RedirectResponse
     {
-        $isPublished = !$post->is_published;
+        $isPublished = ! $post->is_published;
 
         $post->update([
             'is_published' => $isPublished,

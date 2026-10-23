@@ -6,11 +6,17 @@ Auteur : Bara Nsaibia, groupe MDW33.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-01b)
+## État actuel (tag lab-04)
 
--   Routes en closures : `/`, `/bonjour`, `/bonjour-court`, `/bienvenue`, `/version`, `/heure` et `/a-propos`.
--   Vues Blade : `bienvenue`, `heure` et `a-propos`.
--   Base de données SQLite locale (`database/database.sqlite`, non versionnée).
+- Modèles `Category` et `Tag` reliés à `Post` : un article a une catégorie et un auteur (1:N) et plusieurs tags (N:N, table pivot `post_tag`).
+- Fabriques `PostFactory` (état `published()`), `CategoryFactory`, `TagFactory` et seeders pour un jeu de données réaliste.
+- Chargement anticipé avec `with()` ; `Model::preventLazyLoading()` signale tout problème N+1 hors production.
+- Tests Pest : `PostPagesTest`, `PostWriteTest` et `PostRelationsTest`.
+
+## Données de démonstration
+
+Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. Attention : cette commande vide la base avant de la remplir.
+
 ## Routes disponibles
 
 | Méthode | URI | Réponse |
@@ -72,3 +78,9 @@ Ouvrir ensuite http://localhost:8000 (adresse de l'application, différente de l
 ### Page À propos
 
 ![Page A propos](screenshots/s02-a-propos.png)
+
+### Session 07
+
+![Liste des articles avec leur catégorie, leur auteur et leurs tags](screenshots/s07-liste-relations.png)
+
+![Page d'un article avec ses tags et les articles de la même catégorie](screenshots/s07-detail-tags.png)
