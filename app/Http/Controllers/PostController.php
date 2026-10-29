@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,14 +22,16 @@ class PostController extends Controller
     public function archive(string $year): View
     {
         return view('posts.index', [
-            'heading' => 'Articles de '.$year,
+            'heading' => 'Articles de ' . $year,
             'posts' => Post::published()->with('user', 'category', 'tags')->whereYear('published_at', $year)->latest('id')->paginate(4),
         ]);
     }
 
     public function create(): View
     {
-        return view('posts.create');
+        return view('posts.create', [
+            'categories' => Category::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -39,6 +42,7 @@ class PostController extends Controller
             'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
             'is_published' => ['nullable', 'boolean'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
         ]);
 
         $validated['is_published'] = $request->boolean('is_published');
@@ -53,21 +57,25 @@ class PostController extends Controller
     {
         $post->load('user', 'category', 'tags');
 
-        $relatedPosts = $post->category
+        $related = $post->category
             ? $post->category->posts()
                 ->published()
                 ->where('id', '!=', $post->id)
                 ->with('user', 'category', 'tags')
-                ->latest('id')
+                ->latest('published_at')
+                ->take(3)
                 ->get()
             : collect();
 
-        return view('posts.show', compact('post', 'relatedPosts'));
+        return view('posts.show', compact('post', 'related'));
     }
 
     public function edit(Post $post): View
     {
-        return view('posts.edit', compact('post'));
+        return view('posts.edit', [
+            'post' => $post,
+            'categories' => Category::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Post $post): RedirectResponse
@@ -78,6 +86,7 @@ class PostController extends Controller
             'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
             'is_published' => ['nullable', 'boolean'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
         ]);
 
         $validated['is_published'] = $request->boolean('is_published');
@@ -97,7 +106,7 @@ class PostController extends Controller
 
     public function togglePublication(Post $post): RedirectResponse
     {
-        $isPublished = ! $post->is_published;
+        $isPublished = !$post->is_published;
 
         $post->update([
             'is_published' => $isPublished,
