@@ -11,7 +11,24 @@
         </a>
     </section>
 
-    <x-alert type="success" title="Sprint en cours">
-        Les composants Blade évitent de recopier le même code HTML dans chaque page.
-    </x-alert>
+    <h2 class="text-2xl font-bold mb-4">Parcourir par catégorie</h2>
+    <ul class="mb-10 flex flex-wrap gap-3" aria-label="Catégories">
+        @foreach ($categories as $category)
+            <li>
+                <a href="{{ route('posts.category', $category) }}" class="inline-block rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:border-indigo-600 hover:text-indigo-600">{{ $category->name }} ({{ $category->posts_count }})</a>
+            </li>
+        @endforeach
+    </ul>
+
+    <h2 class="text-2xl font-bold mb-4">Derniers articles publiés</h2>
+
+    <div class="grid gap-6 md:grid-cols-2">
+        @forelse ($latestPosts as $post)
+            <x-post-card :post="$post" />
+        @empty
+            <x-alert type="info" title="Aucun article publié" class="md:col-span-2">
+                Les articles publiés apparaîtront ici.
+            </x-alert>
+        @endforelse
+    </div>
 </x-layout>
