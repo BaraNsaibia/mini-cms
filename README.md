@@ -157,3 +157,20 @@ Back-office des catégories et des tags, messages de validation en français, pa
 ![Barre de navigation d'un utilisateur connecté, avec le message « Vous êtes connecté. »](screenshots/s11-connexion.png)
 
 ![Page 403 quand un auteur ouvre la modification de l'article d'un autre auteur](screenshots/s11-interdit.png)
+
+## Comparaison avec le starter kit Livewire
+
+| Critère | Mini-CMS (authentification manuelle) | Starter kit Livewire |
+|---|---|---|
+| Routes d'authentification | `routes/web.php` (`/inscription`, `/connexion`, `/deconnexion`) | Enregistrées par Fortify depuis son paquet ; absentes de `routes/web.php` |
+| Inscription | `app/Http/Controllers/Auth/RegisterController.php` et `resources/views/auth/register.blade.php` | `app/Actions/Fortify/CreateNewUser.php` (`Validator::make` puis `User::create`) et `resources/views/pages/auth/register.blade.php` |
+| Connexion | `app/Http/Controllers/Auth/LoginController.php` (`Auth::attempt`, `regenerate`) et `resources/views/auth/login.blade.php` | Contrôleur de Fortify et `resources/views/pages/auth/login.blade.php` |
+| Déconnexion | `app/Http/Controllers/Auth/LoginController.php` (`logout`, `invalidate`, `regenerateToken`) | Route `logout` de Fortify ; opérations identiques dans `app/Livewire/Actions/Logout.php` |
+| Limitation des tentatives | Aucune | 5 tentatives par minute par e-mail et adresse IP (`app/Providers/FortifyServiceProvider.php`) |
+| Mot de passe oublié | Absent | `Features::resetPasswords()` dans `config/fortify.php` |
+| Vérification de l'e-mail | Absente | `Features::emailVerification()`, `MustVerifyEmail` sur `User`, middleware `verified` sur `/dashboard` |
+| Double authentification | Absente | `Features::twoFactorAuthentication()` et `Features::passkeys()` |
+| Rôles et autorisations | Colonne `role`, Gates (`manage-categories`, `manage-tags`), `PostPolicy`, middleware `admin` | Aucun : à écrire soi-même |
+| Tests | `AuthTest`, `AuthorizationTest`, `AdminAccessTest`, `PostVisibilityTest` | 10 fichiers dans `tests/Feature` (Auth, Settings, Dashboard) |
+
+Ce que je garderais du kit dans un vrai projet : Le kit prend en charge des aspects de sécurité complexes et indispensables en production, comme la limitation des tentatives de connexion, la réinitialisation de mot de passe et l'authentification à deux facteurs. En revanche, pour la gestion des accès métier, je conserverais une architecture claire et sur-mesure basée sur des Gates et des Policies comme développée dans Mini-CMS.
