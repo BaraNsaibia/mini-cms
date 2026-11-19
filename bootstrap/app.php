@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureSiteIsWritable;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
@@ -11,8 +12,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -22,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn(Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
 
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
@@ -34,6 +35,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
             if ($previous instanceof ModelNotFoundException && $previous->getModel() === Post::class) {
                 return response()->view('errors.article-introuvable', [], 404);
+            }
+
+            if ($previous instanceof ModelNotFoundException && $previous->getModel() === Category::class) {
+                $categories = Category::orderBy('name')->get();
+
+                return response()->view('errors.categorie-introuvable', compact('categories'), 404);
             }
 
             return null;
