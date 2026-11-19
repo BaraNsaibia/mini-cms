@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        User::factory()->admin()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         $categories = Category::all();
         $tags = Tag::all();
 
-        $authorAndCategory = fn(array $attributes) => [
+        $authorAndCategory = fn (array $attributes) => [
             'user_id' => $users->random()->id,
             'category_id' => $categories->random()->id,
         ];
