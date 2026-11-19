@@ -6,13 +6,12 @@ Projet fil rouge de l'Atelier Framework Côté Serveur (Laravel 13, PHP 8.3+), 3
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-05)
+## État actuel (tag lab-05b)
 
-- Validation des articles dans `StorePostRequest` et `UpdatePostRequest` (`$request->validated()`) : plus aucune règle dans le contrôleur.
-- Messages flash après création, modification, suppression et publication, affichés par le layout avec `x-alert`.
-- Middleware `EnsureSiteIsWritable` (alias `writable`) : avec `SITE_READ_ONLY=true` dans `.env`, les requêtes d'écriture reçoivent une erreur 503.
-- Page « Article introuvable » (404) pour un article inexistant, rendue depuis `withExceptions` dans `bootstrap/app.php` ; les autres 404 gardent la page standard.
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest` et `PostFeedbackTest`.
+- Back-office des catégories et des tags sous `/admin` (`CategoryController`, `TagController`), protégé par le middleware `writable`, avec Form Requests et messages flash.
+- Messages de validation en français (`lang/fr/validation.php`, `APP_LOCALE=fr`), avec des noms de champs lisibles et un message propre au slug des catégories.
+- Pages 404 et 503 affichées dans le layout du site (`resources/views/errors`).
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest` et `ErrorPagesTest`.
 
 ## Données de démonstration
 
@@ -28,6 +27,7 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | GET | `/posts` | `posts.index` | `PostController@index` |
 | GET | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
 | GET | `/posts/categorie/{category:slug}` | `posts.category` | `PostController@byCategory` |
+| GET | `/posts/tag/{tag:slug}` | `posts.tag` | `PostController@byTag` |
 | GET | `/posts/create` | `posts.create` | `PostController@create` |
 | POST | `/posts` | `posts.store` | `PostController@store` |
 | GET | `/posts/{post}` | `posts.show` | `PostController@show` |
@@ -35,6 +35,18 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | PUT | `/posts/{post}` | `posts.update` | `PostController@update` |
 | DELETE | `/posts/{post}` | `posts.destroy` | `PostController@destroy` |
 | PATCH | `/posts/{post}/publication` | `posts.publication` | `PostController@togglePublication` |
+| GET | `/admin/categories` | `admin.categories.index` | `CategoryController@index` |
+| GET | `/admin/categories/create` | `admin.categories.create` | `CategoryController@create` |
+| POST | `/admin/categories` | `admin.categories.store` | `CategoryController@store` |
+| GET | `/admin/categories/{category}/edit` | `admin.categories.edit` | `CategoryController@edit` |
+| PUT | `/admin/categories/{category}` | `admin.categories.update` | `CategoryController@update` |
+| DELETE | `/admin/categories/{category}` | `admin.categories.destroy` | `CategoryController@destroy` |
+| GET | `/admin/tags` | `admin.tags.index` | `TagController@index` |
+| GET | `/admin/tags/create` | `admin.tags.create` | `TagController@create` |
+| POST | `/admin/tags` | `admin.tags.store` | `TagController@store` |
+| GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
+| PUT | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
+| DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
 
 ## Prérequis
 
@@ -124,3 +136,11 @@ Ouvrir ensuite [http://localhost:8000](http://localhost:8000). L'application uti
 ![Page d'un article avec le message flash « Article créé. »](screenshots/s09-message-flash.png)
 
 ![Page Article introuvable pour un identifiant inexistant](screenshots/s09-article-introuvable.png)
+
+### Session 10
+
+Back-office des catégories et des tags, messages de validation en français, pages 404 et 503 dans le layout du site.
+
+![Formulaire de catégorie envoyé vide, avec les messages de validation en français](screenshots/s10-validation.png)
+
+![Page 404 du site pour une adresse inconnue](screenshots/s10-404.png)
