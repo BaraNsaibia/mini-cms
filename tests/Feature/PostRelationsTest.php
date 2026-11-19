@@ -7,6 +7,7 @@ use App\Models\User;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 it('lists posts with their category, author and tags without lazy loading', function () {
@@ -19,7 +20,7 @@ it('lists posts with their category, author and tags without lazy loading', func
         'user_id' => $author->id,
     ]);
 
-    $posts->each(fn(Post $post) => $post->tags()->attach($tag));
+    $posts->each(fn (Post $post) => $post->tags()->attach($tag));
 
     $this->get(route('posts.index'))
         ->assertOk()

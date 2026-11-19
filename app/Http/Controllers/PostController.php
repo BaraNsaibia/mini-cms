@@ -24,7 +24,7 @@ class PostController extends Controller
     public function archive(string $year): View
     {
         return view('posts.index', [
-            'heading' => 'Articles de ' . $year,
+            'heading' => 'Articles de '.$year,
             'posts' => Post::published()->with('user', 'category', 'tags')->whereYear('published_at', $year)->latest('id')->paginate(4),
         ]);
     }
@@ -32,7 +32,7 @@ class PostController extends Controller
     public function byCategory(Category $category): View
     {
         return view('posts.index', [
-            'heading' => 'Catégorie : ' . $category->name,
+            'heading' => 'Catégorie : '.$category->name,
             'posts' => $category->posts()
                 ->published()
                 ->with('user', 'category', 'tags')
@@ -44,7 +44,7 @@ class PostController extends Controller
     public function byTag(Tag $tag): View
     {
         return view('posts.index', [
-            'heading' => 'Tag : ' . $tag->name,
+            'heading' => 'Tag : '.$tag->name,
             'posts' => $tag->posts()
                 ->published()
                 ->with('user', 'category', 'tags')
@@ -68,7 +68,7 @@ class PostController extends Controller
         $validated['is_published'] = $request->boolean('is_published');
         $validated['published_at'] = $validated['is_published'] ? now() : null;
 
-        $post = Post::create(Arr::except($validated, ['tags']));
+        $post = $request->user()->posts()->create(Arr::except($validated, ['tags']));
         $post->tags()->sync($validated['tags'] ?? []);
 
         return redirect()->route('posts.show', $post)->with('success', 'Article créé.');
@@ -124,7 +124,7 @@ class PostController extends Controller
 
     public function togglePublication(Post $post): RedirectResponse
     {
-        $isPublished = !$post->is_published;
+        $isPublished = ! $post->is_published;
 
         $post->update([
             'is_published' => $isPublished,
